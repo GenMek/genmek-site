@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
-import { whatsappUrl } from "@/lib/site";
+import { whatsappLink } from "@/lib/site";
 
 type Variant = "primary" | "ghost" | "solid";
 
@@ -41,7 +41,7 @@ export function WhatsAppButton({
 }: WhatsAppButtonProps) {
   return (
     <motion.a
-      href={whatsappUrl(message)}
+      href={whatsappLink(message)}
       target="_blank"
       rel="noopener noreferrer"
       whileHover={{ y: -2 }}

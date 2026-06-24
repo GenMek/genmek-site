@@ -20,10 +20,23 @@ All editable content lives in **`src/lib/site.ts`**:
 
 | What | Constant | Notes |
 | --- | --- | --- |
-| **WhatsApp number** | `WHATSAPP_NUMBER` | Currently a **placeholder** (`5500000000000`). Replace with the real number — country code + DDD + number, digits only (e.g. `5511999999999`). Every CTA on the site routes through this. |
+| **WhatsApp numbers** | `WHATSAPP_NUMBERS` | The two numbers leads are distributed between via round robin. Country code + DDD + number, digits only. |
 | Default WhatsApp message | `WHATSAPP_MESSAGE` | Prefilled text for the deep link. |
 | Instagram / email | `SOCIAL` | Footer links. |
-| Nav items, intro phrases | `NAV_LINKS`, `INTRO_PHRASES` | |
+| Nav items | `NAV_LINKS` | |
+
+### Lead distribution (round robin)
+
+Every WhatsApp CTA points to `/api/whatsapp`, a Route Handler that atomically
+increments a shared counter and 302-redirects to the next number
+(Lead 1 → A, Lead 2 → B, Lead 3 → A, …). The counter lives in **Upstash Redis**
+(`INCR`), so it's exact and concurrency-safe even across serverless instances.
+
+**Setup:** add the **Upstash for Redis** integration on Vercel (this is what
+"Vercel KV" provisions now). It injects `KV_REST_API_URL` and
+`KV_REST_API_TOKEN` automatically. For local dev, run `vercel env pull`.
+Without these vars the route falls back to an in-memory counter (single
+instance only — **not** exact in production).
 
 ## Structure
 

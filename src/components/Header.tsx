@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { NAV_LINKS } from "@/lib/site";
+import Image from "next/image";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -41,13 +41,12 @@ export function Header() {
         }`}
       >
         <a href="#inicio" aria-label="GenMek — início" className="group">
-          <motion.span
-            className="block"
-            animate={{ y: [0, -1.5, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <Logo size={30} />
-          </motion.span>
+  
+
+          <Image src="/image/logo-transparente-genmek.png" alt="genmek" width={60} height={60}/>
+          
+
+
         </a>
 
         {/* Desktop nav */}
@@ -73,15 +72,17 @@ export function Header() {
             </WhatsAppButton>
           </div>
 
-          {/* Mobile menu toggle */}
+          {/* Mobile menu open button (closing is handled by the overlay's X) */}
           <button
             type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            onClick={() => setMenuOpen(true)}
+            aria-label="Abrir menu"
             aria-expanded={menuOpen}
-            className="flex size-10 items-center justify-center rounded-full border border-line bg-white/[0.03] text-ink lg:hidden"
+            className={`flex size-10 items-center justify-center rounded-full border border-line bg-white/[0.03] text-ink transition-opacity lg:hidden ${
+              menuOpen ? "pointer-events-none opacity-0" : "opacity-100"
+            }`}
           >
-            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            <Menu className="size-5" />
           </button>
         </div>
       </div>
@@ -96,6 +97,16 @@ export function Header() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 top-0 z-40 flex flex-col bg-bg/95 px-6 pt-24 backdrop-blur-xl lg:hidden"
           >
+            {/* Close (X) button */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Fechar menu"
+              className="absolute right-6 top-6 flex size-10 items-center justify-center rounded-full border border-line bg-white/[0.03] text-ink"
+            >
+              <X className="size-5" />
+            </button>
+
             <nav className="flex flex-col gap-1">
               {NAV_LINKS.map((link, i) => (
                 <motion.a

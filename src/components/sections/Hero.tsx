@@ -2,8 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useMotionValue, useMotionTemplate } from "motion/react";
-import { ArrowDown } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
   id: i,
@@ -24,8 +28,8 @@ const word = {
   },
 };
 
-const TITLE_PART_ONE = "Construindo a próxima".split(" ");
-const TITLE_PART_TWO = "fase do seu negócio.".split(" ");
+const TITLE_PART_ONE = "Sua empresa está preparada para ser".split(" ");
+const TITLE_PART_TWO = "encontrada, lembrada e escolhida?".split(" ");
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -47,6 +51,66 @@ export function Hero() {
     return () => el.removeEventListener("mousemove", onMove);
   }, [mx, my]);
 
+  // GSAP: scroll-scrubbed parallax depth + continuous ambient drift.
+  useGSAP(
+    () => {
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (reduce) return;
+
+      // Background layers leave the viewport at different speeds as you scroll,
+      // creating depth. The content lifts and fades for a cinematic exit.
+      const parallax = (selector: string, y: number, scale = 1) =>
+        gsap.to(selector, {
+          yPercent: y,
+          scale,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ref.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 0.6,
+          },
+        });
+
+      parallax(".hero-grid", 28, 1.12);
+      parallax(".hero-orb-1", 55);
+      parallax(".hero-orb-2", -40);
+
+      gsap.to(".hero-content", {
+        yPercent: -14,
+        opacity: 0.25,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ref.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.6,
+        },
+      });
+
+      // Living glows: slow, looping drift so the hero never feels static.
+      gsap.to(".hero-orb-1", {
+        x: 60,
+        y: 40,
+        duration: 9,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      });
+      gsap.to(".hero-orb-2", {
+        x: -50,
+        y: -30,
+        duration: 11,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      });
+    },
+    { scope: ref },
+  );
+
   return (
     <section
       ref={ref}
@@ -54,7 +118,7 @@ export function Hero() {
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-28"
     >
       {/* Tech grid */}
-      <div className="pointer-events-none absolute inset-0 bg-grid bg-grid-fade opacity-60" />
+      <div className="hero-grid pointer-events-none absolute inset-0 bg-grid bg-grid-fade opacity-60" />
 
       {/* Cursor-following glow */}
       <motion.div
@@ -63,8 +127,8 @@ export function Hero() {
       />
 
       {/* Ambient corner glows */}
-      <div className="pointer-events-none absolute -left-40 top-10 size-[40rem] rounded-full bg-brand/10 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-40 bottom-0 size-[34rem] rounded-full bg-glow/10 blur-[120px]" />
+      <div className="hero-orb-1 pointer-events-none absolute -left-40 top-10 size-[40rem] rounded-full bg-brand/10 blur-[120px]" />
+      <div className="hero-orb-2 pointer-events-none absolute -right-40 bottom-0 size-[34rem] rounded-full bg-glow/10 blur-[120px]" />
 
       {/* Floating particles */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -89,27 +153,14 @@ export function Hero() {
           ))}
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8">
+      <div className="hero-content relative mx-auto w-full max-w-7xl px-5 sm:px-8">
         <div className="max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.03] px-4 py-1.5 text-xs font-medium text-muted"
-          >
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-glow opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-glow" />
-            </span>
-            Estruturas digitais para empresas crescerem
-          </motion.div>
-
-          <h1 className="font-display text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
+          <h1 className="font-display text-balance text-5xl font-bold leading-[1.02] tracking-tight text-white sm:text-6xl md:text-7xl lg:text-[5rem]">
             <motion.span
-              variants={{ show: { transition: { staggerChildren: 0.08 } } }}
+              variants={{ show: { transition: { staggerChildren: 0.06 } } }}
               initial="hidden"
               animate="show"
-              className="block text-gradient"
+              className="block"
             >
               {TITLE_PART_ONE.map((w, i) => (
                 <motion.span key={i} variants={word} className="inline-block">
@@ -118,10 +169,10 @@ export function Hero() {
               ))}
             </motion.span>
             <motion.span
-              variants={{ show: { transition: { delayChildren: 0.3, staggerChildren: 0.08 } } }}
+              variants={{ show: { transition: { delayChildren: 0.2, staggerChildren: 0.06 } } }}
               initial="hidden"
               animate="show"
-              className="block text-gradient-brand"
+              className="block"
             >
               {TITLE_PART_TWO.map((w, i) => (
                 <motion.span key={i} variants={word} className="inline-block">
@@ -137,8 +188,8 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.9 }}
             className="mt-7 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg"
           >
-            Criamos sites, landing pages, automações e soluções digitais
-            projetadas para transformar visitantes em clientes.
+            Criamos estruturas digitais que ajudam negócios a crescer com
+            tecnologia e estratégia.
           </motion.p>
 
           <motion.div
@@ -159,22 +210,6 @@ export function Hero() {
           </motion.div>
         </div>
       </div>
-
-      {/* Scroll hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.6 }}
-        className="absolute inset-x-0 bottom-7 mx-auto flex w-fit flex-col items-center gap-2 text-muted"
-      >
-        <span className="text-[11px] uppercase tracking-[0.2em]">Role</span>
-        <motion.span
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ArrowDown className="size-4" />
-        </motion.span>
-      </motion.div>
     </section>
   );
 }

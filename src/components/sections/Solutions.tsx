@@ -6,7 +6,7 @@ import {
   Rocket,
   Bot,
   Server,
-  Plug,
+  MapPin,
   Compass,
 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -34,9 +34,9 @@ const SOLUTIONS = [
     text: "Plataformas sob medida para operar e escalar o seu negócio.",
   },
   {
-    icon: Plug,
-    title: "Integrações",
-    text: "Conectamos suas ferramentas em um ecossistema que funciona sozinho.",
+    icon: MapPin,
+    title: "Google Meu Negócio",
+    text: "Otimização do seu perfil para aparecer no Google e atrair clientes da sua região.",
   },
   {
     icon: Compass,
@@ -54,7 +54,7 @@ export function Solutions() {
         <SectionHeading
           eyebrow="Soluções"
           title="O que construímos"
-          description="Cada serviço é uma peça da sua estrutura digital — projetadas para se conectar e crescer com você."
+          description="Cada serviço é uma peça da sua estrutura digital, projetada para se conectar e crescer com você."
         />
 
         <motion.div

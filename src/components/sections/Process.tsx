@@ -86,7 +86,7 @@ export function Process() {
         <SectionHeading
           eyebrow="Processo"
           title="Como trabalhamos"
-          description="Um método claro, etapa por etapa — como uma máquina sendo construída peça a peça."
+          description="Um método claro, etapa por etapa, como uma máquina sendo construída peça a peça."
         />
 
         <div className="process-track relative mx-auto mt-16 max-w-3xl">

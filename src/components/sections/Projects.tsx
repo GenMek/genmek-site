@@ -60,7 +60,7 @@ const PROJECTS: Project[] = [
     category: "Sistema Web",
     summary: "Plataforma interna para operar e escalar o negócio.",
     detail:
-      "Dashboard personalizado, controle de acessos e relatórios em tempo real — tudo construído para o fluxo específico do cliente.",
+      "Dashboard personalizado, controle de acessos e relatórios em tempo real, tudo construído para o fluxo específico do cliente.",
     tags: ["Dashboard", "Auth", "Tempo real"],
     accent: "from-[#6366f1] to-[#0b0ee8]",
   },

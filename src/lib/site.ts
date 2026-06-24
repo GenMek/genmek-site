@@ -2,23 +2,39 @@
  * Central configuration for the GenMek site.
  *
  * ─────────────────────────────────────────────────────────────
- *  ⚠️  SWAP ME: Replace WHATSAPP_NUMBER with the real number.
- *      Format: country code + DDD + number, digits only.
- *      Example (Brazil): "5511999999999"
+ *  Leads are distributed between these numbers via round robin
+ *  (Lead 1 → A, Lead 2 → B, Lead 3 → A, …). The atomic counter
+ *  lives server-side — see `src/app/api/whatsapp/route.ts`.
+ *  Format: country code + DDD + number, digits only.
  * ─────────────────────────────────────────────────────────────
  */
-export const WHATSAPP_NUMBER = "5500000000000"; // <-- PLACEHOLDER
+export const WHATSAPP_NUMBERS = [
+  "5567991942022", // Número A
+  "5567992264043", // Número B
+] as const;
 
 export const WHATSAPP_MESSAGE =
   "Olá! Vim pelo site da GenMek e gostaria de solicitar um diagnóstico.";
 
-/** Builds a wa.me deep link with the prefilled message. */
-export function whatsappUrl(message: string = WHATSAPP_MESSAGE): string {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+/**
+ * Client-side CTA link. Routes every WhatsApp click through the round-robin
+ * distributor instead of pointing at a fixed number, so the assignment is
+ * decided atomically on the server at click time.
+ */
+export function whatsappLink(message: string = WHATSAPP_MESSAGE): string {
+  return `/api/whatsapp?m=${encodeURIComponent(message)}`;
+}
+
+/** Builds a wa.me deep link for a specific number. (Used server-side.) */
+export function whatsappUrl(
+  number: string,
+  message: string = WHATSAPP_MESSAGE,
+): string {
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
 export const SOCIAL = {
-  instagram: "https://instagram.com/genmek",
+  instagram: "https://instagram.com/agenciagenmek",
   email: "contato@genmek.com.br",
 };
 
@@ -29,13 +45,4 @@ export const NAV_LINKS = [
   { label: "Processo", href: "#processo" },
   { label: "Projetos", href: "#projetos" },
   { label: "Contato", href: "#contato" },
-] as const;
-
-export const INTRO_PHRASES = [
-  "Criando experiências digitais",
-  "Construindo soluções",
-  "Automatizando processos",
-  "Impulsionando negócios",
-  "Transformando ideias",
-  "Gerando resultados",
 ] as const;

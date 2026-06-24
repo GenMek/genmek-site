@@ -1,6 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "motion/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import {
   Zap,
   Layers,
@@ -11,6 +15,8 @@ import {
 } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { staggerContainer, staggerItem } from "@/components/ui/Reveal";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const ITEMS = [
   {
@@ -41,11 +47,50 @@ const ITEMS = [
   {
     icon: Wrench,
     title: "Soluções sob medida",
-    text: "Nada de templates engessados — feito para o seu contexto.",
+    text: "Nada de templates engessados, feito para o seu contexto.",
   },
 ];
 
 export function Differentials() {
+  const skewWrap = useRef<HTMLDivElement>(null);
+
+  // GSAP: cards skew with scroll velocity, then ease back to flat.
+  useGSAP(
+    () => {
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const el = skewWrap.current;
+      if (reduce || !el) return;
+
+      gsap.set(el, { transformOrigin: "right center", force3D: true });
+
+      const proxy = { skew: 0 };
+      const clamp = gsap.utils.clamp(-7, 7);
+      const setSkew = gsap.quickSetter(el, "skewY", "deg");
+
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+          const skew = clamp(self.getVelocity() / -380);
+          if (Math.abs(skew) > Math.abs(proxy.skew)) {
+            proxy.skew = skew;
+            gsap.to(proxy, {
+              skew: 0,
+              duration: 0.7,
+              ease: "power3",
+              overwrite: true,
+              onUpdate: () => setSkew(proxy.skew),
+            });
+          }
+        },
+      });
+    },
+    { scope: skewWrap },
+  );
+
   return (
     <section className="relative py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -56,6 +101,7 @@ export function Differentials() {
         />
 
         <motion.div
+          ref={skewWrap}
           variants={staggerContainer}
           initial="hidden"
           whileInView="show"
