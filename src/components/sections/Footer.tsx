@@ -70,13 +70,10 @@ export function Footer() {
                 <Camera className="size-4 text-glow" />
                 Instagram
               </a>
-              <a
-                href={`mailto:${SOCIAL.email}`}
-                className="inline-flex items-center gap-2.5 text-sm text-muted transition-colors hover:text-ink"
-              >
+              <span className="inline-flex items-center gap-2.5 text-sm text-muted">
                 <Mail className="size-4 text-glow" />
                 {SOCIAL.email}
-              </a>
+              </span>
             </div>
           </div>
         </div>

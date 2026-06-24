@@ -43,7 +43,7 @@ export function Header() {
         <a href="#inicio" aria-label="GenMek — início" className="group">
   
 
-          <Image src="/image/logo-transparente-genmek.png" alt="genmek" width={60} height={60}/>
+          <Image src="/image/logo-transparente-genmek.png" alt="genmek" width={70} height={70}/>
           
 
 

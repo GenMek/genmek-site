@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import {
   AnimatePresence,
   motion,
   useScroll,
   useTransform,
 } from "motion/react";
-import { ArrowUpRight, X } from "lucide-react";
+import { ArrowUpRight, Sparkles, X } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
@@ -19,6 +20,10 @@ type Project = {
   detail: string;
   tags: string[];
   accent: string;
+  /** Optional mockup/screenshot shown over the gradient header. */
+  image?: string;
+  /** Optional live project URL — when set, the case becomes clickable. */
+  liveUrl?: string;
 };
 
 // Placeholder cases — structured so real projects drop straight in.
@@ -33,15 +38,18 @@ const PROJECTS: Project[] = [
       "Estrutura de copy persuasiva, prova social e um único CTA dominante. Construída para velocidade e otimizada para campanhas de tráfego pago.",
     tags: ["Next.js", "Copywriting", "Tráfego pago"],
     accent: "from-[#0b0ee8] to-[#3d5afe]",
+    image: "/image/landing.png",
+    liveUrl: "https://resort-website-six.vercel.app/",
   },
   {
     id: "p2",
-    title: "Site institucional premium",
-    category: "Site Institucional",
-    summary: "Presença digital sólida que transmite autoridade de marca.",
+    title: "Site profissional completo",
+    category: "Website",
+    summary:
+      "Site completo e responsivo para apresentar seu negócio com profissionalismo.",
     detail:
-      "Identidade visual consistente, animações sutis e arquitetura de conteúdo pensada para SEO e credibilidade.",
-    tags: ["Design", "SEO", "Branding"],
+      "Várias páginas (início, serviços, sobre e contato), design responsivo que fica perfeito no celular e otimização para aparecer no Google. A presença online que todo negócio precisa para ser levado a sério.",
+    tags: ["Responsivo", "SEO", "Multi-páginas"],
     accent: "from-[#3d5afe] to-[#7c3aed]",
   },
   {
@@ -53,6 +61,7 @@ const PROJECTS: Project[] = [
       "Integração entre formulários, WhatsApp e CRM, eliminando trabalho manual e garantindo que nenhum lead seja perdido.",
     tags: ["Automação", "Integrações", "CRM"],
     accent: "from-[#0ea5e9] to-[#3d5afe]",
+    image: "/image/automacao.png",
   },
   {
     id: "p4",
@@ -97,11 +106,29 @@ function ParallaxCard({
       className="group surface relative block w-full overflow-hidden rounded-3xl text-left"
     >
       {/* Visual header (gradient placeholder for future imagery) */}
-      <div
-        className={`relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br ${project.accent}`}
-      >
-        <div className="absolute inset-0 bg-grid opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-bg-soft">
+        {project.image ? (
+          <>
+            <Image
+              src={project.image}
+              alt={`Mockup — ${project.title}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            {/* Light bottom fade only — keeps badges legible. */}
+            <div className="absolute inset-0 bg-gradient-to-t from-bg/60 via-transparent to-transparent" />
+          </>
+        ) : (
+          <>
+            {/* Dark base with only a faint accent glow. */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-br ${project.accent} opacity-[0.18]`}
+            />
+            <div className="absolute inset-0 bg-grid opacity-20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/50 to-bg/20" />
+          </>
+        )}
         <span className="absolute left-5 top-5 rounded-full border border-white/20 bg-black/20 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
           {project.category}
         </span>
@@ -119,6 +146,68 @@ function ParallaxCard({
         </p>
       </div>
     </motion.button>
+  );
+}
+
+/**
+ * Open brief field — a free-form input so any lead can describe whatever they
+ * need (idea, demand or specific project) without being boxed into the cases
+ * above. The text becomes the prefilled WhatsApp message, routed through the
+ * same round-robin distributor as every other CTA.
+ */
+function OpenBrief() {
+  const [idea, setIdea] = useState("");
+  const trimmed = idea.trim();
+
+  const message = trimmed
+    ? `Olá! Tenho uma ideia/demanda para a GenMek:\n\n"${trimmed}"\n\nConsegue me ajudar com isso?`
+    : "Olá! Tenho uma ideia/demanda e gostaria de conversar com a GenMek sobre ela.";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="surface mt-16 overflow-hidden rounded-3xl p-6 sm:p-10"
+    >
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="max-w-xl">
+          <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.03] px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-muted">
+            <Sparkles className="size-3.5 text-glow" />
+            Sua ideia
+          </span>
+          <h3 className="mt-4 font-display text-2xl font-semibold text-ink sm:text-3xl">
+            Tem um projeto em mente?
+          </h3>
+          <p className="mt-3 text-pretty text-sm leading-relaxed text-muted sm:text-base">
+            Não importa se está na lista acima ou não. Descreva qualquer ideia,
+            demanda ou desafio do seu negócio a gente avalia e te responde
+            como podemos transformar isso em realidade.
+          </p>
+        </div>
+
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="w-full lg:max-w-md"
+        >
+          <label htmlFor="open-brief" className="sr-only">
+            Descreva sua ideia, demanda ou projeto
+          </label>
+          <textarea
+            id="open-brief"
+            value={idea}
+            onChange={(e) => setIdea(e.target.value)}
+            rows={4}
+            placeholder="Ex.: Preciso de um site que integre com meu sistema de estoque e gere relatórios automáticos…"
+            className="w-full resize-none rounded-2xl border border-line bg-white/[0.02] px-4 py-3.5 text-sm leading-relaxed text-ink placeholder:text-muted/60 transition-colors focus:border-glow/50 focus:outline-none focus:ring-2 focus:ring-glow/30"
+          />
+          <WhatsAppButton className="mt-4 w-full" message={message}>
+            Enviar minha ideia
+          </WhatsAppButton>
+        </form>
+      </div>
+    </motion.div>
   );
 }
 
@@ -144,6 +233,8 @@ export function Projects() {
             />
           ))}
         </div>
+
+        <OpenBrief />
       </div>
 
       {/* Detail modal */}
@@ -169,11 +260,27 @@ export function Projects() {
               transition={{ type: "spring", stiffness: 280, damping: 28 }}
               className="surface relative w-full max-w-lg overflow-hidden rounded-t-3xl sm:rounded-3xl"
             >
-              <div
-                className={`relative aspect-[16/9] w-full bg-gradient-to-br ${active.accent}`}
-              >
-                <div className="absolute inset-0 bg-grid opacity-20" />
-                <div className="absolute inset-0 bg-gradient-to-t from-bg-soft to-transparent" />
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-bg-soft">
+                {active.image ? (
+                  <>
+                    <Image
+                      src={active.image}
+                      alt={`Mockup — ${active.title}`}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 512px"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-bg-soft/60 via-transparent to-transparent" />
+                  </>
+                ) : (
+                  <>
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${active.accent} opacity-[0.18]`}
+                    />
+                    <div className="absolute inset-0 bg-grid opacity-20" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-bg-soft via-bg-soft/50 to-bg-soft/20" />
+                  </>
+                )}
                 <button
                   onClick={() => setActive(null)}
                   aria-label="Fechar"
@@ -202,13 +309,25 @@ export function Projects() {
                     </span>
                   ))}
                 </div>
-                <div className="mt-7">
+                <div className="mt-7 flex flex-col gap-3">
                   <WhatsAppButton
                     className="w-full"
                     message={`Olá! Vi o case "${active.title}" no site e quero algo parecido para o meu negócio.`}
                   >
                     Quero um projeto assim
                   </WhatsAppButton>
+                  {active.liveUrl && (
+                    <a
+                      href={active.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-cursor="hover"
+                      className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-line bg-white/[0.02] px-6 py-3 text-sm font-semibold tracking-tight text-ink transition-colors duration-300 hover:border-glow/50 hover:bg-white/[0.05]"
+                    >
+                      Ver projeto ao vivo
+                      <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </a>
+                  )}
                 </div>
               </div>
             </motion.div>
