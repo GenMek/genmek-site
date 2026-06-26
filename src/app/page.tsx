@@ -8,7 +8,7 @@ import { Problems } from "@/components/sections/Problems";
 import { Solutions } from "@/components/sections/Solutions";
 import { Process } from "@/components/sections/Process";
 import { Differentials } from "@/components/sections/Differentials";
-import { Projects } from "@/components/sections/Projects";
+// import { Projects } from "@/components/sections/Projects";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { Footer } from "@/components/sections/Footer";
 
@@ -27,7 +27,7 @@ export default function Home() {
         <Solutions />
         <Process />
         <Differentials />
-        <Projects />
+        {/* <Projects /> */}
         <FinalCTA />
       </main>
 
