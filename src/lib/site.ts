@@ -34,7 +34,7 @@ export function whatsappUrl(
 }
 
 export const SOCIAL = {
-  instagram: "https://instagram.com/agenciagenmek",
+  instagram: "https://instagram.com/genmek_",
   email: "contato@genmek.com.br",
 };
 
