@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -19,7 +20,7 @@ const SITE_URL = "https://genmek.com.br";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "GenMek — Construindo a próxima fase do seu negócio",
+    default: "GenMek Construindo a próxima fase do seu negócio",
     template: "%s · GenMek",
   },
   description:
@@ -38,13 +39,13 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: SITE_URL,
     siteName: "GenMek",
-    title: "GenMek — Construindo a próxima fase do seu negócio",
+    title: "GenMek Construindo a próxima fase do seu negócio",
     description:
       "Tecnologia, design e estratégia para transformar visitantes em clientes.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GenMek — Construindo a próxima fase do seu negócio",
+    title: "GenMek Construindo a próxima fase do seu negócio",
     description:
       "Tecnologia, design e estratégia para transformar visitantes em clientes.",
   },
@@ -64,6 +65,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body>{children}</body>
+      <GoogleAnalytics gaId="G-GL3K29FYJQ" />
     </html>
   );
 }
