@@ -7,6 +7,7 @@ import { About } from "@/components/sections/About";
 import { Problems } from "@/components/sections/Problems";
 import { Solutions } from "@/components/sections/Solutions";
 import { Process } from "@/components/sections/Process";
+import { Media } from "@/components/sections/Media";
 import { Differentials } from "@/components/sections/Differentials";
 // import { Projects } from "@/components/sections/Projects";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -26,6 +27,7 @@ export default function Home() {
         <Problems />
         <Solutions />
         <Process />
+        <Media />
         <Differentials />
         {/* <Projects /> */}
         <FinalCTA />
